@@ -1,0 +1,572 @@
+```html
+<!DOCTYPE html>
+<html lang="pt-BR" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BovinoPro · Campo</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        agro: {
+                            50: '#f4f7f4',
+                            100: '#e3ebe3',
+                            200: '#c5d8c6',
+                            600: '#3c6e3d',
+                            700: '#315832',
+                            800: '#294729',
+                            900: '#1c2e1c',
+                        },
+                        bgApp: '#FBFBFA',
+                        cardBg: '#F3F4F0'
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #FBFBFA;
+            color: #1f2937;
+        }
+        /* Hide scrollbars for clean mobile feel */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="h-full flex flex-col font-sans max-w-md md:max-w-4xl mx-auto shadow-2xl min-h-screen bg-bgApp relative pb-20 md:pb-6 border-x border-gray-100">
+
+    <!-- TOP HEADER -->
+    <header class="p-5 pb-3 bg-bgApp sticky top-0 z-20 flex justify-between items-start border-b border-gray-100/80 backdrop-blur-md bg-opacity-95">
+        <div>
+            <div class="text-[11px] font-bold tracking-widest text-gray-500 uppercase flex items-center gap-1.5">
+                <span>BOVINOPRO</span>
+                <span class="text-gray-300">•</span>
+                <span>CAMPO</span>
+            </div>
+            <h1 class="text-2xl font-extrabold text-gray-900 tracking-tight mt-0.5" id="header-title">Minha fazenda</h1>
+        </div>
+        <button onclick="openModal()" class="w-10 h-10 rounded-full bg-agro-100/60 text-agro-700 flex items-center justify-center hover:bg-agro-200 transition-colors shadow-sm">
+            <i class="fa-solid fa-cow text-lg"></i>
+        </button>
+    </header>
+
+    <!-- MAIN CONTENT CONTAINER -->
+    <main class="flex-1 px-5 pt-3 space-y-6">
+
+        <!-- TAB 1: INÍCIO / DASHBOARD -->
+        <section id="tab-inicio" class="tab-content space-y-6">
+            <!-- Subtítulo -->
+            <div>
+                <h2 class="text-lg font-bold text-gray-900">Seu rebanho, em um só lugar.</h2>
+                <p class="text-sm text-gray-500 leading-snug">Registre o peso, acompanhe a condição e cuide melhor de cada animal.</p>
+            </div>
+
+            <!-- CARDS DE RESUMO DA FAZENDA -->
+            <div class="grid grid-cols-3 gap-3">
+                <div onclick="switchTab('rebanho', 'todos')" class="bg-cardBg/80 p-3.5 rounded-2xl border border-gray-200/60 flex flex-col justify-between cursor-pointer hover:border-agro-600 transition-all">
+                    <div class="w-7 h-7 rounded-full bg-agro-100 flex items-center justify-center text-agro-700 mb-2">
+                        <i class="fa-solid fa-cow text-xs"></i>
+                    </div>
+                    <div>
+                        <span id="dash-total" class="text-2xl font-extrabold text-gray-900 leading-none">0</span>
+                        <p class="text-xs font-semibold text-gray-500 mt-1">Total</p>
+                    </div>
+                </div>
+
+                <div onclick="switchTab('rebanho', 'BOM')" class="bg-cardBg/80 p-3.5 rounded-2xl border border-gray-200/60 flex flex-col justify-between cursor-pointer hover:border-agro-600 transition-all">
+                    <div class="w-7 h-7 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-700 mb-2">
+                        <i class="fa-solid fa-circle-check text-xs"></i>
+                    </div>
+                    <div>
+                        <span id="dash-saudaveis" class="text-2xl font-extrabold text-gray-900 leading-none">0</span>
+                        <p class="text-xs font-semibold text-gray-500 mt-1">Saudáveis</p>
+                    </div>
+                </div>
+
+                <div onclick="switchTab('alertas')" class="bg-cardBg/80 p-3.5 rounded-2xl border border-gray-200/60 flex flex-col justify-between cursor-pointer hover:border-agro-600 transition-all">
+                    <div class="w-7 h-7 rounded-full bg-amber-100 flex items-center justify-center text-amber-700 mb-2">
+                        <i class="fa-solid fa-triangle-exclamation text-xs"></i>
+                    </div>
+                    <div>
+                        <span id="dash-atencao" class="text-2xl font-extrabold text-gray-900 leading-none">0</span>
+                        <p class="text-xs font-semibold text-gray-500 mt-1">Atenção</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- BOTÃO CADASTRAR GADO -->
+            <button onclick="openModal()" class="w-full py-4 px-6 bg-agro-700 hover:bg-agro-800 text-white font-bold rounded-2xl shadow-lg shadow-agro-700/20 flex items-center justify-center gap-2 text-base transition-all active:scale-[0.99]">
+                <i class="fa-solid fa-plus text-lg"></i> Cadastrar gado
+            </button>
+
+            <!-- SEÇÃO ATUALIZADOS RECENTEMENTE -->
+            <div class="space-y-3">
+                <div class="flex items-center justify-between">
+                    <h3 class="font-bold text-gray-900 text-base">Atualizados recentemente</h3>
+                    <button onclick="switchTab('rebanho')" class="text-xs font-bold text-agro-700 hover:underline">Ver todos</button>
+                </div>
+
+                <div id="recent-list" class="space-y-3">
+                    <!-- Cards inseridos via JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 2: REBANHO (LISTA COMPLETA) -->
+        <section id="tab-rebanho" class="tab-content hidden space-y-4">
+            <!-- BUSCA E FILTROS -->
+            <div class="space-y-3">
+                <div class="relative">
+                    <i class="fa-solid fa-magnifying-glass absolute left-4 top-3.5 text-gray-400 text-sm"></i>
+                    <input type="text" id="search-input" oninput="renderRebanho()" placeholder="Buscar por brinco, nome ou lote..." class="w-full pl-10 pr-4 py-3 bg-cardBg rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-agro-600">
+                </div>
+
+                <div class="flex items-center gap-2 overflow-x-auto no-scrollbar py-1">
+                    <button onclick="setFilter('todos')" id="filter-todos" class="filter-btn px-4 py-2 rounded-xl text-xs font-bold bg-agro-700 text-white whitespace-nowrap shadow-sm">Todos</button>
+                    <button onclick="setFilter('BOM')" id="filter-BOM" class="filter-btn px-4 py-2 rounded-xl text-xs font-bold bg-cardBg text-gray-600 border border-gray-200 whitespace-nowrap">Saudáveis (BOM)</button>
+                    <button onclick="setFilter('MÉDIO')" id="filter-MÉDIO" class="filter-btn px-4 py-2 rounded-xl text-xs font-bold bg-cardBg text-gray-600 border border-gray-200 whitespace-nowrap">Médio</button>
+                    <button onclick="setFilter('PREOCUPANTE')" id="filter-PREOCUPANTE" class="filter-btn px-4 py-2 rounded-xl text-xs font-bold bg-cardBg text-gray-600 border border-gray-200 whitespace-nowrap">Preocupante</button>
+                </div>
+            </div>
+
+            <!-- LISTA DO REBANHO -->
+            <div id="full-rebanho-list" class="space-y-3">
+                <!-- Cards inseridos via JS -->
+            </div>
+        </section>
+
+        <!-- TAB 3: ALERTAS -->
+        <section id="tab-alertas" class="tab-content hidden space-y-4">
+            <div class="bg-amber-50 border border-amber-200 rounded-2xl p-4 flex items-start gap-3">
+                <i class="fa-solid fa-triangle-exclamation text-amber-600 text-lg mt-0.5"></i>
+                <div>
+                    <h4 class="font-bold text-amber-900 text-sm">Animais que requerem atenção</h4>
+                    <p class="text-xs text-amber-700 mt-0.5">Animais com condição corporal preocupante ou observações clínicas pendentes de vistoria.</p>
+                </div>
+            </div>
+
+            <div id="alertas-list" class="space-y-3">
+                <!-- Lista de alertas via JS -->
+            </div>
+        </section>
+
+        <!-- TAB 4: ÁREAS / PASTOS -->
+        <section id="tab-areas" class="tab-content hidden space-y-4">
+            <div class="flex justify-between items-center mb-2">
+                <h3 class="font-bold text-gray-900 text-base">Distribuição por Área</h3>
+                <span class="text-xs text-gray-500 font-semibold" id="total-areas-count">0 locais</span>
+            </div>
+
+            <div id="areas-grid" class="grid grid-cols-1 gap-3">
+                <!-- Grid de áreas inseridas via JS -->
+            </div>
+        </section>
+
+    </main>
+
+    <!-- NAVIGATION BAR (BOTTOM ON MOBILE / STICKY) -->
+    <nav class="fixed bottom-0 left-0 right-0 max-w-md md:max-w-4xl mx-auto bg-white/90 backdrop-blur-lg border-t border-gray-200 py-2.5 px-6 flex justify-around items-center z-30">
+        <button onclick="switchTab('inicio')" id="nav-inicio" class="nav-btn flex flex-col items-center gap-1 text-agro-700 font-bold">
+            <i class="fa-solid fa-house text-lg"></i>
+            <span class="text-[10px]">Início</span>
+        </button>
+
+        <button onclick="switchTab('rebanho')" id="nav-rebanho" class="nav-btn flex flex-col items-center gap-1 text-gray-400 font-medium">
+            <i class="fa-solid fa-cow text-lg"></i>
+            <span class="text-[10px]">Rebanho</span>
+        </button>
+
+        <button onclick="switchTab('alertas')" id="nav-alertas" class="nav-btn flex flex-col items-center gap-1 text-gray-400 font-medium relative">
+            <i class="fa-solid fa-bell text-lg"></i>
+            <span class="text-[10px]">Alertas</span>
+            <span id="badge-alertas" class="absolute -top-1 right-2 w-2 h-2 rounded-full bg-amber-500 hidden"></span>
+        </button>
+
+        <button onclick="switchTab('areas')" id="nav-areas" class="nav-btn flex flex-col items-center gap-1 text-gray-400 font-medium">
+            <i class="fa-solid fa-map-location-dot text-lg"></i>
+            <span class="text-[10px]">Áreas</span>
+        </button>
+    </nav>
+
+    <!-- MODAL DE CADASTRO E EDIÇÃO -->
+    <div id="animal-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center hidden p-0 sm:p-4 transition-all">
+        <div class="bg-bgApp w-full max-w-md rounded-t-3xl sm:rounded-3xl p-6 shadow-2xl border border-gray-200 space-y-4 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center border-b border-gray-200 pb-3">
+                <h3 id="modal-title" class="text-lg font-bold text-gray-900">Cadastrar Animal</h3>
+                <button onclick="closeModal()" class="w-8 h-8 rounded-full bg-gray-200/60 text-gray-600 flex items-center justify-center hover:bg-gray-300">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <form id="animal-form" class="space-y-4" onsubmit="handleFormSubmit(event)">
+                <input type="hidden" id="animal-id">
+
+                <div>
+                    <label class="block text-xs font-bold uppercase text-gray-600 mb-1">Nome / Brinco de Identificação</label>
+                    <input type="text" id="form-nome" required placeholder="Ex: Garrote da cara branca ou #102" class="w-full px-4 py-3 bg-cardBg rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-agro-600 font-medium">
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-gray-600 mb-1">Peso (kg)</label>
+                        <input type="number" step="0.1" id="form-peso" required oninput="calculateArroba()" placeholder="Ex: 350" class="w-full px-4 py-3 bg-cardBg rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-agro-600 font-medium">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-gray-400 mb-1">Arrobas (@)</label>
+                        <input type="text" id="form-arroba" readonly placeholder="0.0 @" class="w-full px-4 py-3 bg-gray-200/70 text-gray-600 rounded-xl border border-gray-200 text-sm font-bold cursor-not-allowed">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-gray-600 mb-1">Localização / Piquete</label>
+                        <select id="form-local" class="w-full px-4 py-3 bg-cardBg rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-agro-600 font-medium">
+                            <option value="Casa">Casa</option>
+                            <option value="Pasto Principal">Pasto Principal</option>
+                            <option value="Retiro Novo">Retiro Novo</option>
+                            <option value="Quarentena">Quarentena</option>
+                            <option value="Piquete 01">Piquete 01</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-gray-600 mb-1">Situação / Condição</label>
+                        <select id="form-situacao" class="w-full px-4 py-3 bg-cardBg rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-agro-600 font-bold">
+                            <option value="BOM" class="text-emerald-700 font-bold">BOM (Saudável)</option>
+                            <option value="MÉDIO" class="text-amber-700 font-bold" selected>MÉDIO</option>
+                            <option value="PREOCUPANTE" class="text-red-700 font-bold">PREOCUPANTE</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold uppercase text-gray-600 mb-1">Notas de Observação / Alerta (Opcional)</label>
+                    <textarea id="form-alerta" rows="2" placeholder="Ex: Necessita aplicação de vermífugo ou vistoria periódica..." class="w-full px-4 py-2.5 bg-cardBg rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-agro-600 font-medium"></textarea>
+                </div>
+
+                <div class="flex gap-3 pt-2">
+                    <button type="button" onclick="closeModal()" class="w-1/2 py-3.5 bg-gray-200 hover:bg-gray-300 font-bold rounded-xl text-gray-700 text-sm">Cancelar</button>
+                    <button type="submit" class="w-1/2 py-3.5 bg-agro-700 hover:bg-agro-800 text-white font-bold rounded-xl text-sm shadow-md">Salvar Animal</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // --- ESTADO INICIAL DA FAZENDA ---
+        const DEFAULT_REBANHO = [
+            {
+                id: '1',
+                nome: 'Garrote da cara branca',
+                peso: 350,
+                arroba: '23.3',
+                local: 'Casa',
+                situacao: 'MÉDIO',
+                alerta: '',
+                dataAtualizacao: new Date().toISOString()
+            }
+        ];
+
+        let rebanho = JSON.parse(localStorage.getItem('bovinopro_rebanho')) || DEFAULT_REBANHO;
+        let activeFilter = 'todos';
+
+        // --- SISTEMA DE PERSISTÊNCIA ---
+        function saveData() {
+            localStorage.setItem('bovinopro_rebanho', JSON.stringify(rebanho));
+            updateDashboard();
+            renderRecent();
+            renderRebanho();
+            renderAlertas();
+            renderAreas();
+        }
+
+        // --- NAVEGAÇÃO DE ABAS ---
+        function switchTab(tabId, filterParam = null) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('text-agro-700', 'font-bold');
+                btn.classList.add('text-gray-400', 'font-medium');
+            });
+
+            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+            const activeNav = document.getElementById(`nav-${tabId}`);
+            activeNav.classList.remove('text-gray-400', 'font-medium');
+            activeNav.classList.add('text-agro-700', 'font-bold');
+
+            if (filterParam) {
+                setFilter(filterParam);
+            }
+        }
+
+        // --- CÁLCULO DE ARROBA (@ = kg / 15) ---
+        function calculateArroba() {
+            const peso = parseFloat(document.getElementById('form-peso').value);
+            const arrobaInput = document.getElementById('form-arroba');
+            if (peso && peso > 0) {
+                arrobaInput.value = (peso / 15).toFixed(1) + ' @';
+            } else {
+                arrobaInput.value = '';
+            }
+        }
+
+        // --- MODAL DE ANIMAIS ---
+        function openModal(id = null) {
+            const modal = document.getElementById('animal-modal');
+            const form = document.getElementById('animal-form');
+            form.reset();
+
+            if (id) {
+                const item = rebanho.find(a => a.id === id);
+                if (item) {
+                    document.getElementById('animal-id').value = item.id;
+                    document.getElementById('form-nome').value = item.nome;
+                    document.getElementById('form-peso').value = item.peso;
+                    document.getElementById('form-local').value = item.local;
+                    document.getElementById('form-situacao').value = item.situacao;
+                    document.getElementById('form-alerta').value = item.alerta || '';
+                    calculateArroba();
+                    document.getElementById('modal-title').textContent = 'Editar Animal';
+                }
+            } else {
+                document.getElementById('animal-id').value = '';
+                document.getElementById('modal-title').textContent = 'Cadastrar Gado';
+            }
+
+            modal.classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('animal-modal').classList.add('hidden');
+        }
+
+        function handleFormSubmit(e) {
+            e.preventDefault();
+            const id = document.getElementById('animal-id').value;
+            const nome = document.getElementById('form-nome').value.trim();
+            const peso = parseFloat(document.getElementById('form-peso').value);
+            const arroba = (peso / 15).toFixed(1);
+            const local = document.getElementById('form-local').value;
+            const situacao = document.getElementById('form-situacao').value;
+            const alerta = document.getElementById('form-alerta').value.trim();
+
+            if (id) {
+                rebanho = rebanho.map(item => item.id === id ? {
+                    ...item, nome, peso, arroba, local, situacao, alerta, dataAtualizacao: new Date().toISOString()
+                } : item);
+            } else {
+                rebanho.unshift({
+                    id: Date.now().toString(),
+                    nome,
+                    peso,
+                    arroba,
+                    local,
+                    situacao,
+                    alerta,
+                    dataAtualizacao: new Date().toISOString()
+                });
+            }
+
+            closeModal();
+            saveData();
+        }
+
+        function deleteAnimal(id) {
+            if (confirm('Deseja realmente remover este animal do registro?')) {
+                rebanho = rebanho.filter(a => a.id !== id);
+                saveData();
+            }
+        }
+
+        // --- COMPONENTE DE CARD DE ANIMAL (ESTILO BOVINOPRO) ---
+        function buildAnimalCard(animal) {
+            let badgeStyle = 'bg-agro-700 text-white';
+            if (animal.situacao === 'MÉDIO') badgeStyle = 'bg-[#315832] text-white';
+            if (animal.situacao === 'PREOCUPANTE') badgeStyle = 'bg-red-600 text-white';
+
+            return `
+                <div class="bg-cardBg/90 p-4 rounded-2xl border border-gray-200/70 flex items-center justify-between hover:shadow-sm transition-all">
+                    <div class="flex items-center gap-3.5">
+                        <div class="w-14 h-14 rounded-xl bg-gray-800 text-white flex items-center justify-center overflow-hidden flex-shrink-0 shadow-inner">
+                            <i class="fa-solid fa-cow text-2xl text-gray-300"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-extrabold text-gray-900 text-base leading-tight">${animal.nome}</h4>
+                            <p class="text-xs font-semibold text-gray-500 mt-0.5">${animal.peso} kg · ${animal.arroba} @</p>
+                            <p class="text-xs text-gray-400 font-medium">${animal.local}</p>
+                        </div>
+                    </div>
+                    <div class="flex flex-col items-end gap-2">
+                        <span class="text-[10px] font-extrabold px-3 py-1 rounded-full ${badgeStyle} tracking-wide">
+                            ${animal.situacao}
+                        </span>
+                        <div class="flex gap-2 text-xs">
+                            <button onclick="openModal('${animal.id}')" class="text-gray-500 hover:text-agro-700 p-1">
+                                <i class="fa-solid fa-pen"></i>
+                            </button>
+                            <button onclick="deleteAnimal('${animal.id}')" class="text-gray-400 hover:text-red-600 p-1">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // --- DASHBOARD E ATUALIZADOS RECENTEMENTE ---
+        function updateDashboard() {
+            const total = rebanho.length;
+            const saudaveis = rebanho.filter(a => a.situacao === 'BOM').length;
+            const atencao = rebanho.filter(a => a.situacao === 'PREOCUPANTE' || (a.alerta && a.alerta.length > 0)).length;
+
+            document.getElementById('dash-total').textContent = total;
+            document.getElementById('dash-saudaveis').textContent = saudaveis;
+            document.getElementById('dash-atencao').textContent = atencao;
+
+            // Badge de Alertas na nav
+            const badge = document.getElementById('badge-alertas');
+            if (atencao > 0) {
+                badge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+            }
+        }
+
+        function renderRecent() {
+            const container = document.getElementById('recent-list');
+            if (rebanho.length === 0) {
+                container.innerHTML = `<p class="text-xs text-gray-400 italic p-4 text-center">Nenhum animal cadastrado ainda.</p>`;
+                return;
+            }
+
+            const recentItems = [...rebanho].sort((a,b) => new Date(b.dataAtualizacao) - new Date(a.dataAtualizacao)).slice(0, 3);
+            container.innerHTML = recentItems.map(buildAnimalCard).join('');
+        }
+
+        // --- TELA DE REBANHO (FILTROS E BUSCA) ---
+        function setFilter(filter) {
+            activeFilter = filter;
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('bg-agro-700', 'text-white');
+                btn.classList.add('bg-cardBg', 'text-gray-600');
+            });
+            const activeBtn = document.getElementById(`filter-${filter}`);
+            if (activeBtn) {
+                activeBtn.classList.remove('bg-cardBg', 'text-gray-600');
+                activeBtn.classList.add('bg-agro-700', 'text-white');
+            }
+            renderRebanho();
+        }
+
+        function renderRebanho() {
+            const container = document.getElementById('full-rebanho-list');
+            const query = document.getElementById('search-input').value.toLowerCase();
+
+            let items = rebanho;
+
+            if (activeFilter !== 'todos') {
+                items = items.filter(a => a.situacao === activeFilter);
+            }
+
+            if (query) {
+                items = items.filter(a => a.nome.toLowerCase().includes(query) || a.local.toLowerCase().includes(query));
+            }
+
+            if (items.length === 0) {
+                container.innerHTML = `<div class="p-8 text-center text-gray-400 text-xs">Nenhum animal encontrado para este filtro.</div>`;
+                return;
+            }
+
+            container.innerHTML = items.map(buildAnimalCard).join('');
+        }
+
+        // --- TELA DE ALERTAS ---
+        function renderAlertas() {
+            const container = document.getElementById('alertas-list');
+            const alertItems = rebanho.filter(a => a.situacao === 'PREOCUPANTE' || (a.alerta && a.alerta.trim().length > 0));
+
+            if (alertItems.length === 0) {
+                container.innerHTML = `
+                    <div class="bg-emerald-50 border border-emerald-200 rounded-2xl p-6 text-center">
+                        <i class="fa-solid fa-circle-check text-emerald-600 text-2xl mb-2"></i>
+                        <h4 class="font-bold text-emerald-900 text-sm">Tudo em dia!</h4>
+                        <p class="text-xs text-emerald-700 mt-1">Nenhum alerta pendente no momento no seu rebanho.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = alertItems.map(animal => `
+                <div class="bg-cardBg p-4 rounded-2xl border border-amber-200/70 space-y-2">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <h4 class="font-extrabold text-gray-900 text-sm">${animal.nome}</h4>
+                            <p class="text-xs text-gray-500">${animal.local} · ${animal.peso} kg (${animal.arroba} @)</p>
+                        </div>
+                        <span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full ${animal.situacao === 'PREOCUPANTE' ? 'bg-red-600 text-white' : 'bg-amber-500 text-white'}">
+                            ${animal.situacao}
+                        </span>
+                    </div>
+                    ${animal.alerta ? `<p class="text-xs text-gray-700 bg-white/60 p-2.5 rounded-xl border border-gray-200/50"><i class="fa-solid fa-comment-medical text-amber-600 mr-1"></i> ${animal.alerta}</p>` : ''}
+                    <div class="flex justify-end pt-1">
+                        <button onclick="openModal('${animal.id}')" class="text-xs font-bold text-agro-700 hover:underline">Resolver / Atualizar</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // --- TELA DE ÁREAS / PASTOS ---
+        function renderAreas() {
+            const container = document.getElementById('areas-grid');
+            const locations = ['Casa', 'Pasto Principal', 'Retiro Novo', 'Quarentena', 'Piquete 01'];
+            
+            document.getElementById('total-areas-count').textContent = `${locations.length} áreas cadastrais`;
+
+            container.innerHTML = locations.map(loc => {
+                const count = rebanho.filter(a => a.local === loc).length;
+                return `
+                    <div onclick="switchTab('rebanho'); setFilter('todos'); document.getElementById('search-input').value='${loc}'; renderRebanho();" class="bg-cardBg p-4 rounded-2xl border border-gray-200/60 flex items-center justify-between cursor-pointer hover:border-agro-600 transition-all">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-xl bg-agro-100 text-agro-700 flex items-center justify-center font-bold">
+                                <i class="fa-solid fa-location-dot"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-gray-900 text-sm">${loc}</h4>
+                                <p class="text-xs text-gray-500">${count} ${count === 1 ? 'animal' : 'animais'}</p>
+                            </div>
+                        </div>
+                        <i class="fa-solid fa-chevron-right text-xs text-gray-400"></i>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // --- INICIALIZAÇÃO DA APLICAÇÃO ---
+        window.onload = function() {
+            updateDashboard();
+            renderRecent();
+            renderRebanho();
+            renderAlertas();
+            renderAreas();
+        };
+    </script>
+</body>
+</html>
+```
